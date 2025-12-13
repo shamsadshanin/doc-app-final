@@ -1,0 +1,2 @@
+Name,Details,Generic,Brand
+add_drug_name (required),add_drug_details (optional),generic_name,brand_name
