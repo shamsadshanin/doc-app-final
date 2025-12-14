@@ -47,7 +47,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | controller and method URI segments.
 |
 | Examples:	my-controller/index	-> my_controller/index
-|		my-controller/my-method	-> my_controller/my_method
+|		my-controller/my-method	-> my_controller/my-method
 */
 
 
@@ -110,6 +110,7 @@ $route['blog/(:any)'] = 'profile/blog/$1';
 $route['post/(:any)/(:any)'] = 'profile/details/$1/$2';
 $route['category/(:any)/(:any)'] = 'profile/category/$1/$2';
 $route['contact/(:any)'] = 'profile/contact/$1';
+$route['share/operation/(:any)'] = 'share/operation/$1';
 $route['appointment/(:any)'] = 'profile/appointment/$1';
 $route['book-appointment/(:any)'] = 'profile/book_appointment/$1';
 $route['send-message'] = 'profile/send_message';

@@ -233,10 +233,9 @@ class Patients extends Home_Controller {
 
 
     public function add()
-    {	
+    {   
         if($_POST)
         {   
-
             $id = $this->input->post('id', true);
 
             $check = $this->admin_model->check_duplicate_email($this->input->post('email', true));
@@ -275,6 +274,22 @@ class Patients extends Home_Controller {
                     'permanent_address' => $this->input->post('permanent_address', true),
                     'created_at' => my_date_now()
                 );
+
+                if (!empty($this->input->post('webcam_photo'))) {
+                    $img = $this->input->post('webcam_photo');
+                    $img = str_replace('data:image/jpeg;base64,', '', $img);
+                    $img = str_replace(' ', '+', $img);
+                    $data_img = base64_decode($img);
+                    $file = 'uploads/patients/' . uniqid() . '.jpg';
+                    file_put_contents($file, $data_img);
+                    $data['patient_photo'] = $file;
+                } else {
+                    if ($_FILES['patient_photo']['name'] != '') {
+                        $up_load = $this->upload_patient_photo('patient_photo');
+                        $data['patient_photo'] = $up_load['image'];
+                    }
+                }
+
                 $data = $this->security->xss_clean($data);
                 
                 //if id available info will be edited
@@ -322,6 +337,24 @@ class Patients extends Home_Controller {
             }
         }      
         
+    }
+
+    public function upload_patient_photo($file_name)
+    {
+        $config['upload_path']   = 'uploads/patients/';
+        $config['allowed_types'] = 'jpg|jpeg|png';
+        $config['max_size']      = 5000;
+        $config['file_name']     = uniqid();
+
+        $this->load->library('upload', $config);
+
+        if ($this->upload->do_upload($file_name)) {
+            $data = $this->upload->data();
+            $image_path = $config['upload_path'].$data['file_name'];
+            return ['image' => $image_path];
+        } else {
+            return ['error' => $this->upload->display_errors()];
+        }
     }
 
 
@@ -489,5 +522,4 @@ class Patients extends Home_Controller {
 
 
 }
-	
 

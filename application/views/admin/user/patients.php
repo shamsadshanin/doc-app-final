@@ -88,6 +88,27 @@
 
               </div>
               
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label><?php echo trans('patient-photo') ?></label>
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" name="patient_photo" id="patient_photo" onchange="previewFile(this);">
+                      <label class="custom-file-label" for="patient_photo">Choose file</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div id="webcam-container" style="width:100%;"></div>
+                      <a href="#" class="btn btn-info" id="take-snapshot"><?php echo trans('take-snapshot') ?></a>
+                      <input type="hidden" name="webcam_photo" id="webcam_photo">
+                    </div>
+                    <div class="col-md-6">
+                      <img id="preview-photo" src="" alt="Photo Preview" style="width:100%; display: none;">
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <input type="hidden" name="id" value="<?php echo html_escape($patients['0']['id']); ?>">
               <!-- csrf token -->
@@ -175,3 +196,38 @@
 
         </section>
       </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+<script>
+    function previewFile(input){
+        var file = $("input[type=file]").get(0).files[0];
+
+        if(file){
+            var reader = new FileReader();
+
+            reader.onload = function(){
+                $("#preview-photo").attr("src", reader.result).show();
+            }
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    $(document).ready(function() {
+        Webcam.set({
+            width: 320,
+            height: 240,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#webcam-container');
+
+        $('#take-snapshot').on('click', function(e) {
+            e.preventDefault();
+            Webcam.snap(function(data_uri) {
+                $('#webcam_photo').val(data_uri);
+                $('#preview-photo').attr('src', data_uri).show();
+            });
+        });
+    });
+</script>
